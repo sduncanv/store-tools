@@ -1,0 +1,65 @@
+service: aws-store-tools
+frameworkVersion: '3'
+
+package:
+  patterns:
+    - "!./**"
+    - "handlers/**"
+    - "Classes/**"
+    - "Models/**"
+
+useDotenv: true
+
+custom:
+  globalTimeOut: 30
+
+  cors:
+    origin: "*"
+    headers:
+      - Content-Type
+      - X-Amz-Date
+      - Authorization
+      - X-Api-Key
+      - X-Amz-Security-Token
+      - X-Amz-User-Agent
+      - Access-Control-Allow-Headers
+      - Accept
+      - Accept-Language
+      - Content-Language
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Methods
+      - Access-Control-Allow-Credentials
+
+provider:
+  name: aws
+  runtime: python3.9
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+          Resource: "*"
+
+functions:
+  Login:
+    name: Login
+    handler: handlers/LoginHandler.login
+    timeout: ${self:custom.globalTimeOut}
+    events:
+      - http:
+          path: /login
+          method: post
+          cors: ${self:custom.cors}
+
+  Singup:
+    name: Singup
+    handler: handlers/SingupHandler.singup
+    timeout: ${self:custom.globalTimeOut}
+    events:
+      - http:
+          path: /singup
+          method: post
+          cors: ${self:custom.cors}
