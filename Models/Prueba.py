@@ -19,3 +19,4 @@ class PruebaModel(Base):
 
         self.prueba_id = kwargs['prueba_id']
         self.name = kwargs['name']
+        self.active = kwargs['active']

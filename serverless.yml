@@ -3,6 +3,9 @@ frameworkVersion: '3'
 
 plugins:
   - serverless-offline
+  # - serverless-python-requirements
+
+useDotenv: true
 
 package:
   patterns:
@@ -10,8 +13,6 @@ package:
     - "handlers/**"
     - "Classes/**"
     - "Models/**"
-
-useDotenv: true
 
 custom:
   globalTimeOut: 30
@@ -33,10 +34,26 @@ custom:
       - Access-Control-Allow-Methods
       - Access-Control-Allow-Credentials
 
+  pythonRequirements:
+    fileName: requirements.txt
+    layer: true
+    slim: true
+    strip: false
+    slimPatternsAppendDefaults: false
+    slimPatterns:
+      - boto3/**
+      - botocore/**
+      - s3transfer/**
+      - urllib3/**
+      - mysql/vendor/**
+      - '*/.py[c|o]'
+      - '*/_pycache_'
+
 provider:
   name: aws
   runtime: python3.9
-
+  layers:
+    - Ref: PythonRequirementsLambdaLayer
   iam:
     role:
       statements:
@@ -44,35 +61,18 @@ provider:
           Action:
             - s3:PutObject
             - s3:GetObject
+            - cognito-idp:AdminSetUserPassword
+            - cognito-idp:AdminUpdateUserAttributes
+            - cognito-idp:GetUser
           Resource: "*"
 
 functions:
-  Tools:
-    name: Tools
-    handler: handlers/BasicToolsHandler.tools
-    timeout: ${self:custom.globalTimeOut}
-    events:
-      - http:
-          path: /tools
-          method: get
-          cors: ${self:custom.cors}
-
-  Login:
-    name: Login
-    handler: handlers/LoginHandler.login
-    timeout: ${self:custom.globalTimeOut}
-    events:
-      - http:
-          path: /login
-          method: post
-          cors: ${self:custom.cors}
-
-  Singup:
-    name: Singup
-    handler: handlers/SingupHandler.singup
-    timeout: ${self:custom.globalTimeOut}
-    events:
-      - http:
-          path: /singup
-          method: post
-          cors: ${self:custom.cors}
+  # Tools:
+  #   name: Tools
+  #   handler: handlers/BasicToolsHandler.tools
+  #   timeout: ${self:custom.globalTimeOut}
+  #   events:
+  #     - http:
+  #         path: /tools
+  #         method: get
+  #         cors: ${self:custom.cors}

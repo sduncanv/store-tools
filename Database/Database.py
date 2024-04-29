@@ -2,7 +2,7 @@ import os
 from typing import Union
 from datetime import datetime
 
-from sqlalchemy. orm import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy import create_engine
 
 Base = declarative_base()
@@ -23,10 +23,10 @@ class Database:
             f'mysql+pymysql://{self.user}:{self.password}@{self.host}/{self.db}'
         )
 
-    def execute_statement(self, statement):
+    def select_statement(self, statement):
         """
-        This function opens a connection to the database, executes the query,
-        and closes the connection.
+        This function opens a connection to the database, executes the query
+        to select and closes the connection.
 
         Returns a database object.
         """
@@ -53,3 +53,38 @@ class Database:
             results_as_dicts.append(res)
 
         return results_as_dicts
+
+    def insert_statement(self, statement):
+        """
+        This function opens a connection to the database, executes the query
+        to insert and closes the connection.
+
+        Returns a database object.
+        """
+
+        engine = self.create_engine_method()
+
+        with engine.connect() as connection:
+            consult = connection.execute(statement)
+            connection.commit()
+            connection.close()
+
+        consult = consult.inserted_primary_key._asdict()
+        return consult
+
+    def update_statement(self, statement):
+        """
+        This function opens a connection to the database, executes the query
+        to updated and closes the connection.
+
+        Returns a database object.
+        """
+
+        engine = self.create_engine_method()
+
+        with engine.connect() as connection:
+            consult = connection.execute(statement)
+            connection.commit()
+            connection.close()
+
+        return consult
