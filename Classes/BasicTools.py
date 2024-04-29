@@ -5,22 +5,22 @@ import sys
 from sqlalchemy import select
 
 from Models.Prueba import PruebaModel
-from Database.Database import Database as db
+from Database.Database import Database
 
 
 class BasicTools:
 
     def __init__(self) -> None:
-        pass
+        self.db = Database()
 
     def tool(self, event):
 
         statement = select(PruebaModel).filter_by(active=1)
-        print(f'{statement} ---> statement')
+        result = self.db.execute_statement(statement)
 
-        result = db.select(statement=statement)
-        print(f'{result} ---> result')
-        return result
+        return self.response_format(
+            statusCode=200, data=result
+        )
 
     def response_format(self, statusCode, message='Ok', data=[]):
 

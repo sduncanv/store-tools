@@ -1,5 +1,11 @@
 import os
-import pymysql
+from typing import Union
+from datetime import datetime
+
+from sqlalchemy. orm import declarative_base
+from sqlalchemy import create_engine
+
+Base = declarative_base()
 
 
 class Database:
@@ -11,49 +17,39 @@ class Database:
         self.user = os.getenv('DB_USER')
         self.password = os.getenv('DB_PASSWORD')
 
-    def conexion(self):
+    def create_engine_method(self):
 
-        connection = pymysql.connect(
-            user=self.user,
-            password=self.password,
-            host=self.host,
-            database=self.db,
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor
+        return create_engine(
+            f'mysql+pymysql://{self.user}:{self.password}@{self.host}/{self.db}'
         )
 
-        return connection
+    def execute_statement(self, statement):
+        """
+        This function opens a connection to the database, executes the query,
+        and closes the connection.
 
-    def select(self, statement):
+        Returns a database object.
+        """
 
-        connection = self.conexion()
-        result = False
+        engine = self.create_engine_method()
 
-        try:
-            with connection.cursor() as cursor:
-
-                cursor.execute(statement)
-                result = cursor.fetchall()
-
-        finally:
-            connection.close()
-
-        return result
-
-    def statement(self, statement, values=None):
-
-        connection = self.conexion()
-        result = False
-
-        try:
-            with connection.cursor() as cursor:
-
-                cursor.execute(statement, values)
-                result = cursor.lastrowid
-
+        with engine.connect() as connection:
+            consult = connection.execute(statement)
             connection.commit()
-
-        finally:
             connection.close()
 
-        return result
+        return self.formate_result(consult)
+
+    def formate_result(self, result) -> Union[dict, list]:
+
+        results_as_dicts = []
+
+        for row in result:
+            res = dict(row._mapping)
+            for key, value in res.items():
+                if isinstance(value, datetime):
+                    value = value.strftime("%Y-%m-%d %H:%M:%S")
+                    res[key] = value
+            results_as_dicts.append(res)
+
+        return results_as_dicts
