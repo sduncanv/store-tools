@@ -1,3 +1,4 @@
+import json
 # from sqlalchemy import select, insert, update
 
 # from Models.Prueba import PruebaModel
@@ -34,3 +35,8 @@ class BasicTools:
         return response_format(
             statusCode=200, data=data
         )
+
+    def get_body_data(self, event: dict) -> dict:
+
+        result = json.loads(event['body'])
+        return result
