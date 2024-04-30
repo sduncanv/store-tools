@@ -1,6 +1,6 @@
 import boto3
 
-from Utils.Helpers import exception_decorator
+from Tools.Utils.Helpers import exception_decorator
 
 
 class AwsCognito:
@@ -28,6 +28,8 @@ class AwsCognito:
 
     @exception_decorator
     def authenticate_user(self, data) -> dict:
+
+        print(data)
 
         client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
