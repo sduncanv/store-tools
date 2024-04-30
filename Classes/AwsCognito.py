@@ -1,16 +1,21 @@
 import boto3
 
-from Tools.Database.Database import Database
-
 
 class AwsCognito:
 
     def __init__(self):
-        self.db = Database()
+        pass
 
     def create_user(self, **kwargs) -> dict:
 
-        print(kwargs)
+        # kwargs = {
+        #     'client_id': '3f7engqga332prsh099an7g1tk',
+        #     'username': 'user_prueba_2',
+        #     'password': 'User_prueba_2',
+        #     'user_id': "2",
+        #     'created_at': "2024-04-29 11:59:08",
+        #     'email': "correonuevo171201@gmail.com8"
+        # }
 
         client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
@@ -19,10 +24,11 @@ class AwsCognito:
             Username=kwargs['username'],
             Password=kwargs['password'],
             UserAttributes=[
-                {"Name": "user_id", "Value": kwargs['user_id']},
-                {"Name": "created_at", "Value": kwargs['created_at']}
+                {"Name": "email", "Value": kwargs['email']}
             ]
         )
+
+        print(result)
 
         status_code = result.get('ResponseMetadata', '').get('HTTPStatusCode', '')
 
