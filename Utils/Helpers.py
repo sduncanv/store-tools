@@ -5,6 +5,7 @@ import sys
 from copy import copy
 from typing import Union, Tuple
 from botocore.exceptions import ClientError
+from Tools.Classes.CustomError import CustomError
 
 
 def response_format(statusCode, message='Ok', data=[]):
@@ -82,6 +83,14 @@ def exception_decorator(function):
             message = e.args[0]
 
         except ClientError as e:
+
+            print(e)
+            read_exception_message()
+
+            statusCode = 400
+            message = e.args[0]
+
+        except CustomError as e:
 
             print(e)
             read_exception_message()
