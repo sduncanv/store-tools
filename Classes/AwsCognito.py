@@ -5,10 +5,12 @@ from Tools.Database.Database import Database
 
 class AwsCognito:
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.db = Database()
 
     def create_user(self, **kwargs) -> dict:
+
+        print(kwargs)
 
         client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
