@@ -93,10 +93,13 @@ def exception_decorator(function):
         except CustomError as e:
 
             print(e)
+            print(type(e))
             read_exception_message()
 
             statusCode = 400
-            message = e.args[0]
+            print(e)
+            # message = e.args[0]
+            message = str(e)
 
         except Exception as e:
 
