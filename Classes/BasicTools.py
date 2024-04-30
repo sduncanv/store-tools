@@ -28,6 +28,7 @@ class BasicTools:
         #     active=0
         # )
         # self.db.update_statement(stmt)
+
         data = 'Updated'
 
         return response_format(

@@ -1,63 +1,57 @@
 import boto3
 
+from Utils.Helpers import exception_decorator
+
 
 class AwsCognito:
 
     def __init__(self):
         pass
 
-    def create_user(self, **kwargs) -> dict:
-
-        # kwargs = {
-        #     'client_id': '3f7engqga332prsh099an7g1tk',
-        #     'username': 'user_prueba_2',
-        #     'password': 'User_prueba_2',
-        #     'user_id': "2",
-        #     'created_at': "2024-04-29 11:59:08",
-        #     'email': "correonuevo171201@gmail.com8"
-        # }
+    @exception_decorator
+    def create_user(self, data) -> dict:
 
         client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
         result = client_cognito.sign_up(
-            ClientId=kwargs['client_id'],
-            Username=kwargs['username'],
-            Password=kwargs['password'],
+            ClientId=data['client_id'],
+            Username=data['username'],
+            Password=data['password'],
             UserAttributes=[
-                {"Name": "email", "Value": kwargs['email']}
+                {"Name": "email", "Value": data['email']}
             ]
         )
-
-        print(result)
 
         status_code = result.get('ResponseMetadata', '').get('HTTPStatusCode', '')
 
         return {'statusCode': status_code, 'data': result}
 
-    def authenticate_user(self, **kwargs) -> dict:
+    @exception_decorator
+    def authenticate_user(self, data) -> dict:
 
         client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
         result = client_cognito.confirm_sign_up(
-            ClientId=kwargs['client_id'],
-            Username=kwargs['username'],
-            ConfirmationCode=kwargs['code']
+            ClientId=data['client_id'],
+            Username=data['username'],
+            ConfirmationCode=data['code']
         )
 
         status_code = result.get('ResponseMetadata', '').get('HTTPStatusCode', '')
 
         return {'statusCode': status_code, 'data': result}
 
-    def get_token_by_user(self, **kwargs) -> dict:
+    @exception_decorator
+    def get_token_by_user(self, data) -> dict:
 
         client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
         result = client_cognito.initiate_auth(
             AuthFlow='USER_PASSWORD_AUTH',
-            ClientId=kwargs['client_id'],
+            ClientId=data['client_id'],
             AuthParameters={
-                'USERNAME': kwargs['username'],
-                'PASSWORD': kwargs['password']
+                'USERNAME': data['username'],
+                'PASSWORD': data['password']
             }
         )
 

@@ -2,6 +2,8 @@ import json
 import traceback
 import sys
 
+from botocore.exceptions import ClientError
+
 
 def response_format(statusCode, message='Ok', data=[]):
 
@@ -28,14 +30,14 @@ def response_format(statusCode, message='Ok', data=[]):
 
 def exception_decorator(function):
 
-    def validations(event, context):
+    def validations(*args, **kwargs):
 
         result = []
         statusCode = 200
         message = 'Ok'
 
         try:
-            result = function(event, context)
+            result = function(*args, **kwargs)
 
         except TypeError as e:
 
@@ -70,6 +72,14 @@ def exception_decorator(function):
             message = e.args[0]
 
         except ValueError as e:
+
+            print(e)
+            read_exception_message()
+
+            statusCode = 400
+            message = e.args[0]
+
+        except ClientError as e:
 
             print(e)
             read_exception_message()
