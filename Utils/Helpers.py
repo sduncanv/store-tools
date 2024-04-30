@@ -2,6 +2,8 @@ import json
 import traceback
 import sys
 
+from copy import copy
+from typing import Union, Tuple
 from botocore.exceptions import ClientError
 
 
@@ -119,3 +121,52 @@ def read_exception_message():
         function: {function},
         code: {code}
     """)
+
+
+def get_input_data(
+    event: dict, default_http_method: str = 'POST'
+) -> Union[dict, any]:
+
+    input_method = {
+        'POST': get_post_data,
+        'GET': get_querystringparameters_data,
+        'PUT': get_post_data,
+        'DELETE': get_querystringparameters_data,
+    }
+
+    path, http_method = get_path(event)
+    method = http_method or default_http_method
+    assert method.upper() in input_method.keys(), "Invalid HTTP method."
+
+    return input_method[method.upper()](event)
+
+
+def _get_input_data(event: dict, key: str) -> Union[dict, any]:
+
+    data = {}
+    if type(event) is dict and key in event.keys():
+        data = copy(event[key])
+        if not type(data) is dict:
+            try:
+                data = json.loads(data)
+            except Exception:
+                data = {}
+    return data
+
+
+def get_post_data(event: dict) -> Union[dict, any]:
+
+    return _get_input_data(event, 'body')
+
+
+def get_querystringparameters_data(event: dict) -> Union[dict, any]:
+
+    return _get_input_data(event, 'queryStringParameters')
+
+
+def get_path(event: dict) -> Tuple[str, str]:
+
+    if type(event) is dict:
+        return event.get('path', ''), event.get('httpMethod', '')
+
+    return None, None

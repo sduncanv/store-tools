@@ -76,3 +76,7 @@ functions:
           path: /tools
           method: get
           cors: ${self:custom.cors}
+      - http:
+          path: /tools
+          method: post
+          cors: ${self:custom.cors}
