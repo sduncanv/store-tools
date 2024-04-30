@@ -1,12 +1,12 @@
 import boto3
 
-from Database.Database import Database
+# from Database.Database import Database
 
 
 class AwsCognito:
 
     def __init__(self) -> None:
-        self.db = Database()
+        pass
 
     def create_user(self, **kwargs) -> dict:
 
