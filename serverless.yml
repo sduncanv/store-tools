@@ -1,4 +1,4 @@
-service: aws-store-tools
+service: store-tools
 frameworkVersion: '3'
 
 plugins:
