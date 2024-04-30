@@ -67,6 +67,9 @@ Thumbs.db
 # Python files
 venv/
 requirements.txt
+__pycache__/
+**/__pycache__/
 
 # VS Code
 .vscode/
+.gitignore

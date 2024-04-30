@@ -1,7 +1,7 @@
 # from sqlalchemy import select, insert, update
 
 # from Models.Prueba import PruebaModel
-from Database.Database import Database
+from Database.Conn import Database
 from Utils.Helpers import response_format
 
 
