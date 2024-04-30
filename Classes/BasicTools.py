@@ -1,8 +1,8 @@
 # from sqlalchemy import select, insert, update
 # from Models.Prueba import PruebaModel
 
-from Database.Conn import Database
-from Utils.Helpers import response_format, get_input_data
+from Tools.Database.Conn import Database
+from Tools.Utils.Helpers import response_format, get_input_data
 
 
 class BasicTools:
