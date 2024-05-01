@@ -1,6 +1,7 @@
 from sqlalchemy.sql.functions import current_timestamp
-from Database.Conn import Base
 from sqlalchemy import String, Column, DateTime, Integer
+
+from Tools.Database.Conn import Base
 
 
 class PruebaModel(Base):

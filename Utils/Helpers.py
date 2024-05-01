@@ -1,9 +1,9 @@
 import json
 import traceback
 import sys
-
 from copy import copy
 from typing import Union, Tuple
+from sqlalchemy.exc import OperationalError
 from botocore.exceptions import ClientError
 from Tools.Classes.CustomError import CustomError
 
@@ -93,12 +93,19 @@ def exception_decorator(function):
         except CustomError as e:
 
             print(e)
+            read_exception_message()
+
+            statusCode = 400
+            message = str(e)
+
+        except OperationalError as e:
+
+            print(e)
             print(type(e))
             read_exception_message()
 
             statusCode = 400
-            print(e)
-            # message = e.args[0]
+            print(e.args[0])
             message = str(e)
 
         except Exception as e:
