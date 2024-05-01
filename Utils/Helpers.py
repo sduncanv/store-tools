@@ -109,10 +109,10 @@ def exception_decorator(function):
             statusCode = 500
             message = 'Internal server error'
 
-        # return response_format(statusCode, message, result)
-        return {
-            'statusCode': statusCode, 'message': message, 'result': result
-        }
+        return response_format(statusCode, message, result)
+        # return {
+        #     'statusCode': statusCode, 'message': message, 'result': result
+        # }
 
     return validations
 
