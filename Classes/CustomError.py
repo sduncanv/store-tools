@@ -6,4 +6,4 @@ class CustomError(Exception):
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        return self.message
+        return repr(self.message)
