@@ -16,7 +16,7 @@ def response_format(statusCode, message='Ok', data=[]):
     }
 
     if data:
-        body['data'] = data
+        body['data'] = data['data']
 
     response = {
         'statusCode': statusCode,
