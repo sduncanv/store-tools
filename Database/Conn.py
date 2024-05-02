@@ -87,4 +87,6 @@ class Database:
             connection.commit()
             connection.close()
 
-        return consult
+        result = consult.inserted_primary_key._asdict()
+        print(f'{result} +++++++++')
+        return result

@@ -64,7 +64,7 @@ def exception_decorator(function):
             print(e)
             read_exception_message()
 
-            statusCode = 404
+            statusCode = 400
             message = e.args[0]
 
         except AttributeError as e:
