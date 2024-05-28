@@ -10,7 +10,7 @@ class AwsTools:
         pass
 
     @exception_decorator
-    def upload_file(self, data) -> dict:
+    def upload_file(self, data: dict) -> dict:
 
         s3_client = boto3.client('s3')
 
@@ -18,7 +18,7 @@ class AwsTools:
             response = s3_client.put_object(
                 Body=data['file'],
                 Bucket=data['bucket_name'],
-                Key=['filename']
+                Key=data['filename']
             )
 
             print(f'{response} ....')
