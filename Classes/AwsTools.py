@@ -10,7 +10,7 @@ class AwsTools:
         pass
 
     @exception_decorator
-    def create_user(self, data) -> dict:
+    def upload_file(self, data) -> dict:
 
         s3_client = boto3.client('s3')
 
