@@ -1,4 +1,5 @@
 import boto3
+from botocore.exceptions import ClientError
 
 from Tools.Utils.Helpers import exception_decorator
 
@@ -43,22 +44,27 @@ class AwsCognito:
 
         return {'statusCode': status_code, 'data': result}
 
-    @exception_decorator
+    # @exception_decorator
     def get_token_by_user(self, data) -> dict:
 
-        client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
+        try:
+            client_cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
-        result = client_cognito.initiate_auth(
-            AuthFlow='USER_PASSWORD_AUTH',
-            ClientId=data['client_id'],
-            AuthParameters={
-                'USERNAME': data['username'],
-                'PASSWORD': data['password']
-            }
-        )
+            result = client_cognito.initiate_auth(
+                AuthFlow='USER_PASSWORD_AUTH',
+                ClientId=data['client_id'],
+                AuthParameters={
+                    'USERNAME': data['username'],
+                    'PASSWORD': data['password']
+                }
+            )
 
-        print(f'{result} <- result cognito')
-        status_code = result.get('ResponseMetadata', '').get('HTTPStatusCode', '')
-        result = result.get('AuthenticationResult', '')
+            print(f'{result} <- result cognito')
+            status_code = result.get('ResponseMetadata', '').get('HTTPStatusCode', '')
+            result = result.get('AuthenticationResult', '')
+
+        except ClientError as e:
+            status_code = 400
+            result = str(e)
 
         return {'statusCode': status_code, 'data': result}
