@@ -57,6 +57,7 @@ class AwsCognito:
             }
         )
 
+        print(f'{result} <- result cognito')
         status_code = result.get('ResponseMetadata', '').get('HTTPStatusCode', '')
         result = result.get('AuthenticationResult', '')
 

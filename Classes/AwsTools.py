@@ -24,6 +24,7 @@ class AwsTools:
             print(f'{response} ....')
 
         except ClientError as e:
+            print(f'Error: {e}')
             raise CustomError(f'Error: {e}')
 
         status_code = response['ResponseMetadata']['HTTPStatusCode']
