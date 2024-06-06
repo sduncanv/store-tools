@@ -2,7 +2,7 @@ service: store-tools
 frameworkVersion: '3'
 
 plugins:
-  - serverless-offline
+  # - serverless-offline
   # - serverless-python-requirements
 
 useDotenv: true
@@ -52,8 +52,8 @@ custom:
 provider:
   name: aws
   runtime: python3.9
-  layers:
-    - Ref: PythonRequirementsLambdaLayer
+  # layers:
+  #   - Ref: PythonRequirementsLambdaLayer
   iam:
     role:
       statements:

@@ -11,6 +11,8 @@ class BasicTools:
 
         for i_data in input_data:
 
+            print(f'{i_data} ----> i_data')
+
             if not type(i_data['value']) is i_data['type']:
                 is_valid = False
                 reason = f"invalid-{i_data['name']}"
