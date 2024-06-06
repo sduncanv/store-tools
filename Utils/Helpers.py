@@ -16,7 +16,7 @@ def response_format(statusCode, message='Ok', data=[]):
     }
 
     if data:
-        print(f'{data} : data')
+
         body['data'] = data['data']
         body['statusCode'] = data['statusCode']
 
@@ -119,9 +119,6 @@ def exception_decorator(function):
             message = 'Internal server error'
 
         return response_format(statusCode, message, result)
-        # return {
-        #     'statusCode': statusCode, 'message': message, 'result': result
-        # }
 
     return validations
 

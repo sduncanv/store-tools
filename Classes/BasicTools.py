@@ -1,45 +1,7 @@
-# from sqlalchemy import select, insert, update
-# from Models.Prueba import PruebaModel
-
-from Tools.Database.Conn import Database
-from Tools.Utils.Helpers import response_format, get_input_data
-
-
 class BasicTools:
 
     def __init__(self) -> None:
-        self.db = Database()
-
-    def tool(self, event):
-
-        print(f'{event} ---> event')
-
-        input_data = get_input_data(event)
-        print(f'{input_data} ---> input_data')
-        print(f'{type(input_data)} ---> type(input_data)')
-
-        # statement = select(PruebaModel).filter_by(active=1)
-        # result = self.db.select_statement(statement)
-        # print(result)
-
-        # stmt = insert(PruebaModel).values(
-        #     name='Documento'
-        # )
-        # res = self.db.insert_statement(stmt)
-        # print(res)
-
-        # stmt = update(PruebaModel).where(
-        #     PruebaModel.prueba_id == 17
-        # ).values(
-        #     active=0
-        # )
-        # self.db.update_statement(stmt)
-
-        data = 'Updated'
-
-        return response_format(
-            statusCode=200, data=data
-        )
+        pass
 
     def validate_input_data(self, input_data: list) -> dict:
 

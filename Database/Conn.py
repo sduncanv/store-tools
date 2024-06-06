@@ -1,7 +1,6 @@
 import os
 from typing import Union
 from datetime import datetime
-
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import create_engine
 
@@ -88,5 +87,5 @@ class Database:
             connection.close()
 
         result = consult.last_updated_params()
-        print(f'{result} +++++++++')
+
         return result

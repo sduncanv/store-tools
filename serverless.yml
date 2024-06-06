@@ -65,18 +65,3 @@ provider:
             - cognito-idp:AdminUpdateUserAttributes
             - cognito-idp:GetUser
           Resource: "*"
-
-functions:
-  Tools:
-    name: Tools
-    handler: handlers/BasicToolsHandler.tools
-    timeout: ${self:custom.globalTimeOut}
-    events:
-      - http:
-          path: /tools
-          method: get
-          cors: ${self:custom.cors}
-      - http:
-          path: /tools
-          method: post
-          cors: ${self:custom.cors}

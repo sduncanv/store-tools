@@ -21,12 +21,9 @@ def get_model_columns(
 ) -> Union[list, dict]:
 
     table_columns = model.__table__.columns
-    print(f'{table_columns} ----> table_columns')
     table_name = model.__tablename__
-    print(f'{table_name} ----> table_name')
     column_names = {} if get_attributes else []
 
-    print(f'{excluded_columns} ----> excluded_columns')
     if exclude_defaults:
         excluded_columns.extend(
             ['active', 'created_at', 'updated_at']
@@ -34,8 +31,6 @@ def get_model_columns(
 
     for column in table_columns:
         column_name = str(column).replace(f'{table_name}.', '')
-        print(f'{column_name} ----> column_name')
-        print(f'{excluded_columns} ----> excluded_columns')
 
         if column_name in excluded_columns:
             continue
@@ -48,7 +43,6 @@ def get_model_columns(
 
         else:
             column_names.append(column_name)
-    print(f'{excluded_columns} ----> excluded_columns')
 
     return column_names
 
@@ -56,30 +50,21 @@ def get_model_columns(
 def get_column_attributes(column):
 
     # Extracting type
-    print(f'{column.type} ----> column.type')
     raw_type = column.type
     text_type = convert_type_to_str(raw_type)
-    print(f'{text_type} ----> text_type')
     type_ = convert_type(text_type)
-    print(f'{type_} ----> type_')
 
     length = ''
 
     # Extracting default values
-    print(f'{column.default} ----> column.default')
     default = str(column.default.arg) if column.default else column.default
-    print(f'{default} ----> default')
 
-    print(f'{column.server_default} ----> column.server_default')
     server_default = (
         str(column.server_default.arg) if column.server_default else column.server_default
     )
-    print(f'{server_default} ----> server_default')
 
-    print(f'{column.onupdate} ----> column.onupdate')
     on_update = str(
         column.onupdate.arg) if column.onupdate else column.onupdate
-    print(f'{on_update} ----> on_update')
 
     # Extracting length
     if text_type in ['VARCHAR']:
@@ -107,7 +92,6 @@ def get_column_attributes(column):
 def convert_type_to_str(type_):
     """Strip parenthesis and return db type"""
 
-    print(f'{type_} ----> text_type')
     return str(type_).split('(', 1)[0]
 
 
