@@ -20,8 +20,8 @@ class BasicTools:
 
             if i_data["value"] == "":
                 is_valid = False
-                reason = f"empty-{i_data["name"]}"
-                data.append(f"{i_data["name"]} can't be empty.")
+                reason = f"empty-{i_data['name']}"
+                data.append(f"{i_data['name']} can't be empty.")
 
         return {
             'is_valid': is_valid,
