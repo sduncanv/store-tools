@@ -18,6 +18,7 @@ def response_format(statusCode, message='Ok', data=[]):
     if data:
         print(f'{data} : data')
         body['data'] = data['data']
+        body['statusCode'] = data['statusCode']
 
     response = {
         'statusCode': statusCode,
