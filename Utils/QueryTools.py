@@ -105,3 +105,21 @@ def convert_type(type_: str) -> Union[object, str]:
     return (
         PYTHON_SQL[type_] if PYTHON_SQL.get(type_, '') else type_
     )
+
+
+def exclude_columns(model, excluded: list, primary_key=False) -> list:
+
+    if excluded is None:
+        excluded = []
+
+    columns = []
+
+    for column in model.__table__.columns:
+
+        if primary_key and column.primary_key:
+            excluded.append(column.key)
+
+        if column.key not in excluded:
+            columns.append(column)
+
+    return columns
