@@ -18,11 +18,6 @@ class Database:
 
     def create_engine_method(self):
 
-        print(f'{self.db} ---> self.db')
-        print(f'{self.host} ---> self.host')
-        print(f'{self.user} ---> self.user')
-        print(f'{self.password} ---> self.password')
-
         return create_engine(
             f'mysql+pymysql://{self.user}:{self.password}@{self.host}/{self.db}'
         )

@@ -22,7 +22,7 @@ class AwsCognito:
                 Password=data['password'],
                 UserAttributes=[
                     {'Name': 'email', 'Value': data['email']},
-                    {'Name': 'user_id', 'Value': data['user_id']},
+                    # {'Name': 'user_id', 'Value': data['user_id']},
                 ]
             )
 
