@@ -3,7 +3,7 @@ import traceback
 import sys
 from copy import copy
 from typing import Union, Tuple
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, InvalidRequestError
 from botocore.exceptions import ClientError
 from Tools.Classes.CustomError import CustomError
 
@@ -108,6 +108,14 @@ def exception_decorator(function):
 
             statusCode = 400
             print(e.args[0])
+            message = str(e)
+
+        except InvalidRequestError as e:
+
+            print(e)
+            read_exception_message()
+
+            statusCode = 400
             message = str(e)
 
         except Exception as e:
