@@ -67,10 +67,12 @@ class Database:
 
         with engine.connect() as connection:
             consult = connection.execute(statement)
+            print(f'{consult} ----> B. consult')
             connection.commit()
             connection.close()
 
         consult = consult.inserted_primary_key._asdict()
+        print(f'{consult} ----> B.1. consult')
         return consult
 
     def update_statement(self, statement):
@@ -86,9 +88,10 @@ class Database:
 
         with engine.connect() as connection:
             consult = connection.execute(statement)
+            print(f'{consult} ----> C. consult')
             connection.commit()
             connection.close()
 
         result = consult.last_updated_params()
-
+        print(f'{consult} ----> C.1. consult')
         return result
