@@ -6,6 +6,9 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+# ENGINE = 'mysql+pymysql'
+ENGINE = 'postgresql+psycopg2'
+
 
 class Database:
 
@@ -19,7 +22,7 @@ class Database:
     def create_engine_method(self):
 
         return create_engine(
-            f'mysql+pymysql://{self.user}:{self.password}@{self.host}/{self.db}'
+            f'{ENGINE}://{self.user}:{self.password}@{self.host}/{self.db}'
         )
 
     def select_statement(self, statement):
