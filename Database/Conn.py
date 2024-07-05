@@ -21,6 +21,9 @@ class Database:
 
     def create_engine_method(self):
 
+        text = f'{ENGINE}://{self.user}:{self.password}@{self.host}/{self.db}'
+        print(f'{text} ---> conn')
+
         return create_engine(
             f'{ENGINE}://{self.user}:{self.password}@{self.host}/{self.db}'
         )
