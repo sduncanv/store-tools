@@ -1,4 +1,3 @@
-import os
 from typing import Union
 from datetime import datetime
 from sqlalchemy.orm import declarative_base
@@ -6,18 +5,18 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
-# ENGINE = 'mysql+pymysql'
-ENGINE = 'postgresql+psycopg2'
+ENGINE = 'mysql+pymysql'
+# ENGINE = 'postgresql+psycopg2'
 
 
 class Database:
 
-    def __init__(self):
+    def __init__(self, db, host, user, password):
 
-        self.db = os.getenv('DB_NAME')
-        self.host = os.getenv('DB_HOST')
-        self.user = os.getenv('DB_USER')
-        self.password = os.getenv('DB_PASSWORD')
+        self.db = db
+        self.host = host
+        self.user = user
+        self.password = password
 
     def create_engine_method(self):
 
