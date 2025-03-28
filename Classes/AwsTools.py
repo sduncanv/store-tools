@@ -21,10 +21,8 @@ class AwsTools:
             )
 
         except ClientError as e:
-
             raise CustomError(f'Error: {e}')
 
         status_code = response['ResponseMetadata']['HTTPStatusCode']
-        data = response
 
-        return {'statusCode': status_code, 'data': data}
+        return {'statusCode': status_code, 'data': response}

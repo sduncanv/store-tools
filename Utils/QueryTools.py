@@ -1,7 +1,7 @@
 
-from typing import Union
+from typing import Union, Optional, List, Dict
 
-PYTHON_SQL = {
+SQL_TO_PYTHON_TYPES = {
     "INTEGER": int,
     "BIGINT": int,
     "DATE": "date",
@@ -16,13 +16,13 @@ def get_model_columns(
     model,
     exclude_primary_key: bool = False,
     exclude_defaults: bool = True,
-    get_attributes: bool = False,
-    excluded_columns=[]
-) -> Union[list, dict]:
+    return_attributes: bool = False,
+    excluded_columns: Optional[List[str]] = None
+) -> Union[List[str], Dict[str, dict]]:
 
+    excluded_columns = excluded_columns or []
     table_columns = model.__table__.columns
-    table_name = model.__tablename__
-    column_names = {} if get_attributes else []
+    result = {} if return_attributes else []
 
     if exclude_defaults:
         excluded_columns.extend(
@@ -30,96 +30,75 @@ def get_model_columns(
         )
 
     for column in table_columns:
-        column_name = str(column).replace(f'{table_name}.', '')
+        column_name = column.name
 
-        if column_name in excluded_columns:
+        if column_name in excluded_columns or (
+            exclude_primary_key and column.primary_key
+        ):
             continue
 
-        if exclude_primary_key and column.primary_key:
-            continue
-
-        if get_attributes:
-            column_names.update(**{column_name: get_column_attributes(column)})
+        if return_attributes:
+            result[column_name] = get_column_metadata(column)
 
         else:
-            column_names.append(column_name)
+            result.append(column_name)
 
-    return column_names
+    return result
 
 
-def get_column_attributes(column):
+def get_column_metadata(column) -> dict:
 
-    # Extracting type
-    raw_type = column.type
-    text_type = convert_type_to_str(raw_type)
-    type_ = convert_type(text_type)
+    column_type_str = extract_type_str(column.type)
+    python_type = map_sql_type(column_type_str)
+    length = None
 
-    length = ''
+    default_value = getattr(column.default, "arg", None)
+    server_default = getattr(column.server_default, "arg", None)
+    on_update = getattr(column.onupdate, "arg", None)
 
-    # Extracting default values
-    default = str(column.default.arg) if column.default else column.default
+    if column_type_str == 'VARCHAR':
+        length = getattr(column.type, "length", 255)
 
-    server_default = (
-        str(column.server_default.arg) if column.server_default else column.server_default
-    )
-
-    on_update = str(
-        column.onupdate.arg) if column.onupdate else column.onupdate
-
-    # Extracting length
-    if text_type in ['VARCHAR']:
-        length = raw_type.length if getattr(raw_type, 'length') else 255
-
-    elif text_type in ['NUMERIC']:
-        length = (
-            f"{raw_type.precision},{raw_type.scale}"
-            if getattr(raw_type, 'precision') else "18,2"
-        )
+    elif column_type_str == 'NUMERIC':
+        precision = getattr(column.type, "precision", 18)
+        scale = getattr(column.type, "scale", 2)
+        length = f"{precision},{scale}"
 
     return {
-        "primary": 1 if column.primary_key else 0,
-        "type": type_,
-        "type_str": text_type,
+        "primary": int(column.primary_key),
+        "type": python_type,
+        "type_str": column_type_str,
         "length": length,
         "nullable": "NULL" if column.nullable else "NOT NULL",
         "server_default": server_default,
-        "default": default,
+        "default": default_value,
         "on_update": on_update,
         "index": column.index
     }
 
 
-def convert_type_to_str(type_):
+def extract_type_str(column_type) -> str:
     """Strip parenthesis and return db type"""
 
-    return str(type_).split('(', 1)[0]
+    return str(column_type).split('(', 1)[0]
 
 
-def convert_type(type_: str) -> Union[object, str]:
+def map_sql_type(sql_type: str) -> Union[object, str]:
 
-    if type(type_) is not str:
-        raise ValueError('Provided type must be a string.')
-
-    type_ = convert_type_to_str(type_)
-
-    return (
-        PYTHON_SQL[type_] if PYTHON_SQL.get(type_, '') else type_
-    )
+    return SQL_TO_PYTHON_TYPES.get(sql_type, sql_type)
 
 
-def exclude_columns(model, excluded: list, primary_key=False) -> list:
+def exclude_columns(model, exclude_list: list, primary_key=False) -> list:
 
-    if excluded is None:
-        excluded = []
-
+    exclude_list = exclude_list or []
     columns = []
 
     for column in model.__table__.columns:
 
         if primary_key and column.primary_key:
-            excluded.append(column.key)
+            exclude_list.append(column.key)
 
-        if column.key not in excluded:
+        if column.key not in exclude_list:
             columns.append(column)
 
     return columns

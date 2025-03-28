@@ -1,71 +1,66 @@
+import os
 import setuptools
 
 
 def get_environment():
-    environment = {}
-    env_filename = ".env"
 
-    with open(env_filename, mode="r") as f:
-        lines = f.readlines()
-        environment = {
-            line.strip().split('=')[0]: line.strip().split('=')[1]
-            for line in lines
-        }
+    environment_variables = {}
+    environment_filename = ".env"
 
-    return environment
+    if not os.path.exists(environment_filename):
+        return environment_filename
+
+    with open(environment_filename, mode="r", encoding="utf-8") as f:
+
+        for line in f:
+            key, _, value = line.strip().partition('=')
+            if key and value:
+                environment_variables[key] = value
+
+    return environment_variables
 
 
 def get_requirements(filename="requirements.txt", write=False):
 
     # Defining placeholders
-    env_vars = ['USERNAME', 'PASSWORD', 'TOKEN']
-    indexes = []
-    requirement_list = []
+    environment_keys = ['USERNAME', 'PASSWORD', 'TOKEN']
     requirements_lock = 'requirements-lock.txt'
 
+    if not os.path.exists(requirements_lock):
+        return []
+
     # Getting environment variables
-    environment = get_environment()
-    repo_user = environment.get('REPO_USER')
-    repo_pass = environment.get('REPO_PASS')
-    repo_token = environment.get('TOKEN')
+    environment_variables = get_environment()
+    user = environment_variables.get('REPO_USER')
+    password = environment_variables.get('REPO_PASS')
+    token = environment_variables.get('TOKEN')
+
+    requirements = []
 
     with open(requirements_lock, mode="r", encoding="utf-8") as req_lock:
+        lines = req_lock.readlines()
 
-        with open(filename, 'w+') as f:
+    with open(filename, 'w' if write else 'r') as f:
 
-            lines = req_lock.readlines()
-            # Extracting indexes from lines containing placeholders
-            indexes = [i for i, l in enumerate(lines)
-                       for var in env_vars if var in l]
+        for line in lines:
+            content = line.strip()
 
-            f.seek(0)  # Setting file start
+            for variable in environment_keys:
+                if variable in content:
+                    content = content.replace('USERNAME', user).replace(
+                        'PASSWORD', password).replace('TOKEN', token)
 
-            for index, line in enumerate(lines):
-                # Setting initial line content
-                content = line
+            if not write:
+                if "#egg=" in content:
+                    package, egg = content.split('#egg=')
+                    content = f"{egg.strip()} @ {package.strip()}"
 
-                if index in set(indexes):
-                    # Replacing content placeholders with environment variables
-                    content = line.replace(
-                        'USERNAME', repo_user
-                    ).replace(
-                        'PASSWORD', repo_pass
-                    ).replace(
-                        'TOKEN', repo_token
-                    )
+            requirements.append(content)
 
-                    if not write:
-                        splitted = content.split('#egg=')
-                        content = (
-                            f'{splitted[1].strip()} @ {splitted[0].strip()}')
+            if write:
+                f.write(content + '\n')
 
-                # Rewriting line
-                if write:
-                    f.write(content)
-
-                requirement_list.append(content)  # Storing requirement
-
-    return requirement_list
+    return requirements
 
 
 if __name__ == "__main__":

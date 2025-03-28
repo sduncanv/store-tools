@@ -4,7 +4,9 @@ class CustomError(Exception):
 
         self.message: str = message
         self.status_code = status_code
+
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        return repr(self.message)
+        result = repr(self.message)
+        return result
