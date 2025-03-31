@@ -78,7 +78,7 @@ if __name__ == "__main__":
         version="0.0.1",
         author="Samuel Duncan",
         author_email="srduncanv1217@gmail.com",
-        url="https://github.com/sduncanv/store-tools.git",
+        url="git@github.com:sduncanv/store-tools.git",
         project_urls={
             "Bug Tracker": "https://github.com/sduncanv/store-tools.git",
         },
