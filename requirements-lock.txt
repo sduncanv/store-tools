@@ -6,4 +6,3 @@ cloudinary
 python-dotenv
 git+https://TOKEN@github.com/USERNAME/store-users.git@master#egg=store-users
 git+https://TOKEN@github.com/USERNAME/store-products.git@master#egg=store-products
-git+https://TOKEN@github.com/USERNAME/store-tools.git@master#egg=store-tools
