@@ -6,5 +6,5 @@ psycopg2==2.9.9
 cloudinary
 python-dotenv
 git+ssh://git@github.com/USERNAME/store-users.git@master#egg=store-users
-git+ssh://git@github.com/USERNAME/store-tools.git@master#egg=store-tools
+git+ssh://git@github.com/USERNAME/store-tools.git@refactorv1#egg=store-tools
 git+ssh://git@github.com/USERNAME/store-products.git@master#egg=store-products
