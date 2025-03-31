@@ -66,7 +66,7 @@ Thumbs.db
 
 # Python files
 venv/
-requirements.txt
+# requirements.txt
 __pycache__/
 **/__pycache__/
 
