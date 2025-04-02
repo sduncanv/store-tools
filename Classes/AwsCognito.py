@@ -24,7 +24,7 @@ class AwsCognito:
 
     def __init__(self):
         self.client_cognito = boto3.client(
-            'cognito-idp', region_name='us-east-1'
+            'cognito-idp', region_name='us-east-2'
         )
 
     @exception_aws_cognito
