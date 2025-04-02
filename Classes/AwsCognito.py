@@ -32,6 +32,7 @@ class AwsCognito:
 
         result = self.client_cognito.sign_up(
             ClientId=data['client_id'],
+            SecretHash=data['secret_hash'],
             Username=data['username'],
             Password=data['password'],
             UserAttributes=[
