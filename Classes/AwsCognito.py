@@ -48,6 +48,7 @@ class AwsCognito:
 
         result = self.client_cognito.confirm_sign_up(
             ClientId=data['client_id'],
+            SecretHash=data['secret_hash'],
             Username=data['username'],
             ConfirmationCode=data['code']
         )
