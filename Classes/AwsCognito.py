@@ -61,6 +61,7 @@ class AwsCognito:
         result = self.client_cognito.initiate_auth(
             AuthFlow='USER_PASSWORD_AUTH',
             ClientId=data['client_id'],
+            SecretHash=data['secret_hash'],
             AuthParameters={
                 'USERNAME': data['username'],
                 'PASSWORD': data['password']
