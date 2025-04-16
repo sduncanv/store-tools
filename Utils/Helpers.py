@@ -1,7 +1,6 @@
 import json
 import traceback
 import sys
-from copy import copy
 from typing import Union, Tuple
 from sqlalchemy.exc import OperationalError, InvalidRequestError
 from botocore.exceptions import ClientError
@@ -20,7 +19,7 @@ def response_format(statusCode, message='Ok', data=[]):
         body['data'] = data['data']
         body['statusCode'] = data['statusCode']
 
-    response = {
+    return {
         'statusCode': statusCode,
         'headers': {
             'Access-Control-Allow-Origin': '*',
@@ -29,8 +28,6 @@ def response_format(statusCode, message='Ok', data=[]):
         },
         'body': json.dumps(body)
     }
-
-    return response
 
 
 def exception_decorator(function):
@@ -103,7 +100,6 @@ def exception_decorator(function):
         except OperationalError as e:
 
             print(e)
-            print(type(e))
             read_exception_message()
 
             statusCode = 400
@@ -135,17 +131,16 @@ def read_exception_message():
 
     exception_type, exception_object, exception_stack = sys.exc_info()
 
-    filename, line, function, code = traceback.extract_tb(
-        exception_stack
-    )[-1]
+    last_trace = traceback.extract_tb(exception_stack)[-1]
+    filename, line, function, code = last_trace
 
     path = filename.split("\\")[-2::]
 
     print(f"""
-        path: {path},
         line: {line},
         function: {function},
-        code: {code}
+        code: {code},
+        path: {path}
     """)
 
 
@@ -161,38 +156,43 @@ def get_input_data(
     }
 
     path, http_method = get_path(event)
-    method = http_method or default_http_method
-    assert method.upper() in input_method.keys(), "Invalid HTTP method."
+    method = (http_method or default_http_method).upper()
 
-    return input_method[method.upper()](event)
+    if method not in input_method:
+        raise ValueError(f'Invalid HTTP method: {method}')
+
+    return input_method[method](event)
 
 
-def _get_input_data(event: dict, key: str) -> Union[dict, any]:
+def extract_data(event: dict, key: str) -> Union[dict, any]:
 
-    data = {}
-    if type(event) is dict and key in event.keys():
-        data = copy(event[key])
-        if not type(data) is dict:
-            try:
-                data = json.loads(data)
-            except Exception:
-                data = {}
-    return data
+    data = event.get(key, {})
+
+    if isinstance(data, str):
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            return {}
+
+    if isinstance(data, dict):
+        return data
+    else:
+        return {}
 
 
 def get_post_data(event: dict) -> Union[dict, any]:
 
-    return _get_input_data(event, 'body')
+    return extract_data(event, 'body')
 
 
 def get_querystringparameters_data(event: dict) -> Union[dict, any]:
 
-    return _get_input_data(event, 'queryStringParameters')
+    return extract_data(event, 'queryStringParameters')
 
 
 def get_path(event: dict) -> Tuple[str, str]:
 
-    if type(event) is dict:
+    if isinstance(event, dict):
         return event.get('path', ''), event.get('httpMethod', '')
 
     return None, None

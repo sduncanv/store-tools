@@ -72,5 +72,4 @@ __pycache__/
 
 # VS Code
 .vscode/
-.gitignore
-main.py
+# .env

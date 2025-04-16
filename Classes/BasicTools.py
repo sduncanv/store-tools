@@ -5,26 +5,26 @@ class BasicTools:
 
     def validate_input_data(self, input_data: list) -> dict:
 
-        is_valid = True
-        reason = ""
-        data = []
+        errors = []
 
         for i_data in input_data:
 
-            if not type(i_data['value']) is i_data['type']:
-                is_valid = False
-                reason = f"invalid-{i_data['name']}"
-                data.append(f"Type of {i_data['name']} is invalid.")
+            name, expected_type, value = (
+                i_data['name'], i_data['type'], i_data['value']
+            )
 
-            if i_data["value"] == "":
-                is_valid = False
-                reason = f"empty-{i_data['name']}"
-                data.append(f"{i_data['name']} can't be empty.")
+            if not isinstance(value, expected_type):
+                errors.append(
+                    f"Type of {name} is invalid. "
+                    f"Expected {expected_type.__name__}."
+                )
+
+            if isinstance(value, str) and not value.strip():
+                errors.append(f"{i_data['name']} can't be empty.")
 
         return {
-            'is_valid': is_valid,
-            'reason': reason,
-            'data': data
+            'is_valid': not errors,
+            'errors': errors
         }
 
     def params(self, name, type, value) -> dict:
