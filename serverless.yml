@@ -1,5 +1,5 @@
 service: store-tools
-frameworkVersion: '3'
+frameworkVersion: '4'
 
 plugins:
   # - serverless-offline
@@ -53,10 +53,10 @@ provider:
   name: aws
   runtime: python3.9
   environment:
-    DB_USER: ${env:DB_USER}
-    DB_PASSWORD: ${env:DB_PASSWORD}
-    DB_NAME: ${env:DB_NAME}
-    DB_HOST: ${env:DB_HOST}
+    DATABASE_USER: ${env:DATABASE_USER}
+    DATABASE_PASSWORD: ${env:DATABASE_PASSWORD}
+    DATABASE_NAME: ${env:DATABASE_NAME}
+    DATABASE_HOST: ${env:DATABASE_HOST}
   # layers:
   #   - Ref: PythonRequirementsLambdaLayer
   iam:

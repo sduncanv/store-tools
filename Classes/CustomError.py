@@ -8,6 +8,4 @@ class CustomError(Exception):
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        # result = repr(self.message)
-        # return result
         return self.message

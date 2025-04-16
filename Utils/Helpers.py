@@ -1,7 +1,6 @@
 import json
 import traceback
 import sys
-from copy import copy
 from typing import Union, Tuple
 from sqlalchemy.exc import OperationalError, InvalidRequestError
 from botocore.exceptions import ClientError
@@ -101,7 +100,6 @@ def exception_decorator(function):
         except OperationalError as e:
 
             print(e)
-            print(type(e))
             read_exception_message()
 
             statusCode = 400
@@ -139,10 +137,10 @@ def read_exception_message():
     path = filename.split("\\")[-2::]
 
     print(f"""
-        path: {path},
         line: {line},
         function: {function},
-        code: {code}
+        code: {code},
+        path: {path}
     """)
 
 
